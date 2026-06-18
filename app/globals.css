@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Subtle fade-in on scroll. The hidden state only applies when motion is
+   allowed, so users who prefer reduced motion (or have JS disabled) see
+   content immediately without any shift. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 600ms ease-out,
+      transform 600ms ease-out;
+  }
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
