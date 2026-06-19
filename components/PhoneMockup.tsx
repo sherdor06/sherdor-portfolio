@@ -53,51 +53,53 @@ function FlutterF({
 }: {
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const posRef = useRef({ x: 60, y: 140 });
-  const velRef = useRef({ x: 0.5, y: 0.4 });
-  const [opacity, setOpacity] = useState(1);
+  const posRef = useRef({ x: 100, y: 120 });
+  const velRef = useRef({ x: 0.6, y: 0.5 });
   const [, forceRender] = useState(0);
+  const size = 28;
+  const margin = 8;
 
   const sync = useCallback(() => {
     forceRender((n) => (n + 1) % 1000);
   }, []);
 
+  const wrap = useCallback(
+    (nx: number, ny: number, w: number, h: number) => {
+      const right = w - margin - size;
+      const bottom = h - margin - size;
+      if (nx > right) nx = margin;
+      if (nx < margin) nx = right;
+      if (ny > bottom) ny = margin;
+      if (ny < margin) ny = bottom;
+      return { x: nx, y: ny };
+    },
+    [],
+  );
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const margin = 8;
-    const w = rect.width - margin * 2;
-    const h = rect.height - margin * 2;
+    const w = rect.width;
+    const h = rect.height;
 
     let raf: number;
 
     const tick = () => {
-      const p = posRef.current;
       const v = velRef.current;
-
-      let nx = p.x + v.x;
-      let ny = p.y + v.y;
-
-      if (nx < margin || nx > w - 28) {
-        v.x *= -0.8;
-        nx = Math.max(margin, Math.min(w - 28, nx));
-      }
-      if (ny < margin || ny > h - 28) {
-        v.y *= -0.8;
-        ny = Math.max(margin, Math.min(h - 28, ny));
-      }
+      const p = posRef.current;
+      let { x: nx, y: ny } = wrap(p.x + v.x, p.y + v.y, w, h);
 
       const speed = Math.sqrt(v.x * v.x + v.y * v.y);
-      if (speed < 0.3 && speed > 0) {
-        const scale = 0.3 / speed;
-        v.x *= scale;
-        v.y *= scale;
+      if (speed < 0.4 && speed > 0) {
+        const s = 0.4 / speed;
+        v.x *= s;
+        v.y *= s;
       }
       if (speed > 2) {
-        const scale = 2 / speed;
-        v.x *= scale;
-        v.y *= scale;
+        const s = 2 / speed;
+        v.x *= s;
+        v.y *= s;
       }
 
       posRef.current = { x: nx, y: ny };
@@ -107,59 +109,46 @@ function FlutterF({
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [containerRef, sync]);
+  }, [containerRef, sync, wrap]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const margin = 8;
-    const w = rect.width - margin * 2;
-    const h = rect.height - margin * 2;
+    const w = rect.width;
+    const h = rect.height;
 
     const handleMouse = (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
       const mx = e.clientX - r.left;
       const my = e.clientY - r.top;
       const p = posRef.current;
-      const dx = p.x + 14 - mx;
-      const dy = p.y + 14 - my;
+      const dx = p.x + size / 2 - mx;
+      const dy = p.y + size / 2 - my;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < 60) {
         const angle = Math.atan2(dy, dx);
         const force = (60 - dist) / 60;
-        const nx = p.x + Math.cos(angle) * force * 14;
-        const ny = p.y + Math.sin(angle) * force * 14;
-        posRef.current = {
-          x: Math.max(margin, Math.min(w - 28, nx)),
-          y: Math.max(margin, Math.min(h - 28, ny)),
-        };
+        const nx = p.x + Math.cos(angle) * force * 18;
+        const ny = p.y + Math.sin(angle) * force * 18;
+        posRef.current = wrap(nx, ny, w, h);
         velRef.current = {
-          x: Math.cos(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
-          y: Math.sin(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
+          x: Math.cos(angle) * 1.4 + (Math.random() - 0.5) * 0.5,
+          y: Math.sin(angle) * 1.4 + (Math.random() - 0.5) * 0.5,
         };
         sync();
       }
     };
 
-    const handleLeave = () => {
-      setOpacity(0);
-      setTimeout(() => setOpacity(1), 200);
-    };
-
     el.addEventListener("mousemove", handleMouse);
-    el.addEventListener("mouseleave", handleLeave);
-    return () => {
-      el.removeEventListener("mousemove", handleMouse);
-      el.removeEventListener("mouseleave", handleLeave);
-    };
-  }, [containerRef, sync]);
+    return () => el.removeEventListener("mousemove", handleMouse);
+  }, [containerRef, sync, wrap]);
 
   return (
     <div
-      className="pointer-events-none absolute transition-opacity duration-200"
-      style={{ left: posRef.current.x, top: posRef.current.y, opacity }}
+      className="pointer-events-none absolute"
+      style={{ left: posRef.current.x, top: posRef.current.y }}
     >
       <img
         src="/flutter_logo.png"
