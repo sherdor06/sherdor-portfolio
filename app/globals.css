@@ -24,6 +24,9 @@
   --th-text-muted: oklch(0.55 0.01 280);
   --th-accent: oklch(0.6 0.2 250);
   --th-accent-hover: oklch(0.52 0.22 250);
+  --th-blob-blue: rgba(59, 130, 246, 0.5);
+  --th-blob-purple: rgba(168, 85, 247, 0.4);
+  --th-blob-teal: rgba(45, 212, 191, 0.3);
 }
 
 [data-theme="light"] {
@@ -36,18 +39,24 @@
   --th-text-muted: oklch(0.55 0.01 280);
   --th-accent: oklch(0.5 0.2 250);
   --th-accent-hover: oklch(0.42 0.22 250);
+  --th-blob-blue: rgba(59, 130, 246, 0.2);
+  --th-blob-purple: rgba(168, 85, 247, 0.15);
+  --th-blob-teal: rgba(45, 212, 191, 0.12);
 }
 
 [data-theme="colorful"] {
-  --th-bg: oklch(0.14 0.03 290);
-  --th-bg-alt: oklch(0.17 0.04 290);
-  --th-bg-card: oklch(0.21 0.05 290 / 0.55);
-  --th-border: oklch(0.28 0.06 290);
+  --th-bg: oklch(0.12 0.04 270);
+  --th-bg-alt: oklch(0.15 0.05 275);
+  --th-bg-card: oklch(0.2 0.06 280 / 0.5);
+  --th-border: oklch(0.3 0.08 285);
   --th-text-primary: oklch(0.99 0.02 290);
-  --th-text-secondary: oklch(0.78 0.05 290);
-  --th-text-muted: oklch(0.58 0.04 290);
-  --th-accent: oklch(0.68 0.25 340);
-  --th-accent-hover: oklch(0.58 0.28 340);
+  --th-text-secondary: oklch(0.82 0.05 290);
+  --th-text-muted: oklch(0.62 0.04 290);
+  --th-accent: oklch(0.72 0.25 340);
+  --th-accent-hover: oklch(0.6 0.28 340);
+  --th-blob-blue: rgba(120, 80, 255, 0.45);
+  --th-blob-purple: rgba(220, 50, 180, 0.4);
+  --th-blob-teal: rgba(255, 100, 50, 0.3);
 }
 
 html {
@@ -143,25 +152,10 @@ body {
 
 /* Glassmorphism utility */
 .glass-card {
-  background: oklch(0.205 0.009 285.63 / 0.55);
+  background: var(--th-bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid oklch(0.274 0.013 286.033 / 0.4);
-}
-
-/* iOS-style spring reveal */
-@keyframes spring-up {
-  0% {
-    opacity: 0;
-    transform: translateY(24px) scale(0.96);
-  }
-  60% {
-    transform: translateY(-4px) scale(1.01);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  border: 1px solid var(--th-border);
 }
 
 /* Audio visualizer bars */

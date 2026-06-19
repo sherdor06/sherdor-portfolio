@@ -1,17 +1,15 @@
 import { Mail, MapPin } from "lucide-react";
 import GithubIcon from "./GithubIcon";
 import PhoneMockup from "./PhoneMockup";
-import LiquidBg from "./LiquidBg";
 import { site } from "@/lib/content";
 
 export default function Hero() {
   return (
     <section
       id="top"
-      className="relative scroll-mt-20 overflow-hidden bg-surface py-20 sm:py-28"
+      className="scroll-mt-20 bg-surface py-20 sm:py-28"
     >
-      <LiquidBg />
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="flex flex-col items-center gap-12 sm:flex-row">
           <div className="flex-1">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { site } from "@/lib/content";
 import ThemeProvider from "@/components/ThemeProvider";
+import LiquidBg from "@/components/LiquidBg";
 import MusicPlayer from "@/components/MusicPlayer";
 import "./globals.css";
 
@@ -34,8 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
       <body className="min-h-full bg-surface text-primary antialiased">
+        <LiquidBg />
         <ThemeProvider>
-          {children}
+          <div className="relative">{children}</div>
           <MusicPlayer />
         </ThemeProvider>
       </body>
