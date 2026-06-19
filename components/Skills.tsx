@@ -14,7 +14,7 @@ export default function Skills() {
               {group.items.map((item) => (
                 <li
                   key={item}
-                  className="rounded-full border border-border-subtle bg-surface-card px-3 py-1 text-sm font-medium text-slate-300 shadow-sm"
+                  className="glass-card rounded-full px-3 py-1 text-sm font-medium text-slate-300 shadow-sm"
                 >
                   {item}
                 </li>

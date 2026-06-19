@@ -9,8 +9,7 @@ export const site = {
   email: "sherdor0605@gmail.com",
   phone: "+998 94 681 15 25",
   phoneHref: "tel:+998946811525",
-  // Placeholder until the real profile URL is available.
-  github: "#",
+  github: "https://github.com/sherdor06",
   about:
     "Tashkent-based Flutter Developer with production experience at Scoreup.uz, currently a part-time IT student. Strong in UI layout optimization, REST API integration, and multimedia components. Uses modern AI-assisted workflows to ship clean mobile features at an accelerated pace.",
 } as const;

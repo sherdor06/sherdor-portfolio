@@ -5,7 +5,7 @@ import { education } from "@/lib/content";
 export default function Education() {
   return (
     <Section id="education" title="Education">
-      <article className="flex gap-4 rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm">
+      <article className="glass-card flex gap-4 rounded-xl p-6 shadow-sm">
         <GraduationCap
           className="mt-0.5 h-6 w-6 shrink-0 text-blue-400"
           aria-hidden="true"

@@ -8,7 +8,7 @@ export default function Languages() {
         {languages.map((language) => (
           <li
             key={language.name}
-            className="rounded-xl border border-border-subtle bg-surface-card px-5 py-3 shadow-sm"
+            className="glass-card rounded-xl px-5 py-3 shadow-sm"
           >
             <span className="text-base font-semibold text-white">
               {language.name}

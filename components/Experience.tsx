@@ -5,7 +5,7 @@ import { experience } from "@/lib/content";
 export default function Experience() {
   return (
     <Section id="experience" title="Experience">
-      <article className="rounded-xl border border-border-subtle bg-surface-card p-6 shadow-sm sm:p-8">
+      <article className="glass-card rounded-xl p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
           <h3 className="text-lg font-semibold text-white">
             {experience.role}{" "}
