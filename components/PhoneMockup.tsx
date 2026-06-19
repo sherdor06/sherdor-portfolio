@@ -68,9 +68,9 @@ function FlutterF({
       const right = w - margin - size;
       const bottom = h - margin - size;
       if (nx > right) nx = margin;
-      if (nx < margin) nx = right;
+      else if (nx < margin) nx = right;
       if (ny > bottom) ny = margin;
-      if (ny < margin) ny = bottom;
+      else if (ny < margin) ny = bottom;
       return { x: nx, y: ny };
     },
     [],
@@ -80,19 +80,31 @@ function FlutterF({
     const el = containerRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
+    const w = rect.width - margin * 2;
+    const h = rect.height - margin * 2;
+    const right = w - size;
+    const bottom = h - size;
 
     let raf: number;
 
     const tick = () => {
       const v = velRef.current;
       const p = posRef.current;
-      let { x: nx, y: ny } = wrap(p.x + v.x, p.y + v.y, w, h);
+      let nx = p.x + v.x;
+      let ny = p.y + v.y;
+
+      if (nx < 0 || nx > right) {
+        v.x *= -1;
+        nx = Math.max(0, Math.min(right, nx));
+      }
+      if (ny < 0 || ny > bottom) {
+        v.y *= -1;
+        ny = Math.max(0, Math.min(bottom, ny));
+      }
 
       const speed = Math.sqrt(v.x * v.x + v.y * v.y);
-      if (speed < 0.4 && speed > 0) {
-        const s = 0.4 / speed;
+      if (speed < 0.3 && speed > 0) {
+        const s = 0.3 / speed;
         v.x *= s;
         v.y *= s;
       }
@@ -102,21 +114,20 @@ function FlutterF({
         v.y *= s;
       }
 
-      posRef.current = { x: nx, y: ny };
+      posRef.current = { x: nx + margin, y: ny + margin };
       sync();
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [containerRef, sync, wrap]);
+  }, [containerRef, sync]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const w = rect.width;
-    const h = rect.height;
+    const w = el.getBoundingClientRect().width;
+    const h = el.getBoundingClientRect().height;
 
     const handleMouse = (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
@@ -133,10 +144,6 @@ function FlutterF({
         const nx = p.x + Math.cos(angle) * force * 18;
         const ny = p.y + Math.sin(angle) * force * 18;
         posRef.current = wrap(nx, ny, w, h);
-        velRef.current = {
-          x: Math.cos(angle) * 1.4 + (Math.random() - 0.5) * 0.5,
-          y: Math.sin(angle) * 1.4 + (Math.random() - 0.5) * 0.5,
-        };
         sync();
       }
     };
