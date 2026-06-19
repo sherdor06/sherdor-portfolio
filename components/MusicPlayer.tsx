@@ -1,34 +1,66 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Music, Pause } from "lucide-react";
+import { Music, Volume2 } from "lucide-react";
 
 const MUSIC_URL = "/winter777.mp3";
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    let blocked = true;
 
     const handleEnded = () => {
       setPlaying(false);
       audio.currentTime = 0;
     };
 
-    const handleCanPlay = () => setLoaded(true);
-
     audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("canplaythrough", handleCanPlay);
 
-    if (audio.readyState >= 3) setLoaded(true);
+    const tryAutoplay = () => {
+      audio.play().then(() => {
+        blocked = false;
+        setPlaying(true);
+      }).catch(() => {
+        setAutoplayBlocked(true);
+      });
+    };
+
+    if (audio.readyState >= 3) {
+      tryAutoplay();
+    } else {
+      audio.addEventListener("canplaythrough", tryAutoplay, { once: true });
+    }
+
+    const handleInteraction = () => {
+      if (blocked) {
+        audio.play().then(() => {
+          blocked = false;
+          setPlaying(true);
+          setAutoplayBlocked(false);
+        }).catch(() => {});
+      }
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
+    };
+
+    document.addEventListener("click", handleInteraction);
+    document.addEventListener("keydown", handleInteraction);
+    document.addEventListener("touchstart", handleInteraction);
 
     return () => {
       audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("canplaythrough", handleCanPlay);
+      audio.removeEventListener("canplaythrough", tryAutoplay);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
     };
   }, []);
 
@@ -46,7 +78,7 @@ export default function MusicPlayer() {
 
   return (
     <>
-      <audio ref={audioRef} src={MUSIC_URL} preload="auto" loop={false} />
+      <audio ref={audioRef} src={MUSIC_URL} preload="auto" loop />
 
       <button
         type="button"
@@ -70,9 +102,12 @@ export default function MusicPlayer() {
         )}
       </button>
 
-      {!loaded && (
-        <div className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-600 border-t-blue-500" />
+      {autoplayBlocked && !playing && (
+        <div className="fixed bottom-24 right-6 z-50">
+          <div className="flex items-center gap-2 rounded-full bg-slate-800/90 px-4 py-2 text-xs text-slate-300 shadow-lg backdrop-blur-md">
+            <Volume2 className="h-3 w-3 text-blue-400" />
+            Sahifani bossangiz musiqa ijro etiladi
+          </div>
         </div>
       )}
     </>
