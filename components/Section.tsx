@@ -17,7 +17,7 @@ export default function Section({
   return (
     <section
       id={id}
-      className={`scroll-mt-20 py-16 sm:py-20 ${alt ? "bg-slate-50" : "bg-white"}`}
+      className={`scroll-mt-20 py-16 sm:py-20 ${alt ? "bg-surface-alt" : "bg-surface"}`}
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <Reveal>

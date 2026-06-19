@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { site } from "@/lib/content";
+import MusicPlayer from "@/components/MusicPlayer";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,8 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
-      <body className="min-h-full bg-white text-slate-900 antialiased">
+      <body className="min-h-full bg-surface text-slate-100 antialiased">
         {children}
+        <MusicPlayer />
       </body>
     </html>
   );

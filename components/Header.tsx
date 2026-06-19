@@ -8,14 +8,14 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border-subtle bg-surface/80 backdrop-blur">
       <nav
         aria-label="Primary"
         className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6"
       >
         <a
           href="#top"
-          className="text-base font-bold tracking-tight text-slate-900"
+          className="text-base font-bold tracking-tight text-white"
         >
           {site.name}
         </a>
@@ -26,7 +26,7 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-blue-600"
+                className="text-sm font-medium text-slate-400 transition-colors hover:text-blue-400"
               >
                 {link.label}
               </a>
@@ -41,7 +41,7 @@ export default function Header() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-700 transition-colors hover:bg-slate-100 md:hidden"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 md:hidden"
         >
           {open ? (
             <X className="h-6 w-6" aria-hidden="true" />
@@ -55,7 +55,7 @@ export default function Header() {
       {open && (
         <div
           id="mobile-menu"
-          className="border-t border-slate-200 bg-white md:hidden"
+          className="border-t border-border-subtle bg-surface md:hidden"
         >
           <ul className="mx-auto flex max-w-5xl flex-col px-4 py-2 sm:px-6">
             {navLinks.map((link) => (
@@ -63,7 +63,7 @@ export default function Header() {
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-blue-600"
+                  className="block rounded-lg px-2 py-3 text-base font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-blue-400"
                 >
                   {link.label}
                 </a>

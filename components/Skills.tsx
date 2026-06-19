@@ -7,14 +7,14 @@ export default function Skills() {
       <div className="grid gap-6 sm:grid-cols-2">
         {skillGroups.map((group) => (
           <div key={group.label}>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
               {group.label}
             </h3>
             <ul className="mt-3 flex flex-wrap gap-2">
               {group.items.map((item) => (
                 <li
                   key={item}
-                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-700 shadow-sm"
+                  className="rounded-full border border-border-subtle bg-surface-card px-3 py-1 text-sm font-medium text-slate-300 shadow-sm"
                 >
                   {item}
                 </li>

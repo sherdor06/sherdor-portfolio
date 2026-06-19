@@ -2,6 +2,10 @@
 
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-surface: oklch(0.141 0.005 285.823);
+  --color-surface-alt: oklch(0.17 0.006 285.71);
+  --color-surface-card: oklch(0.205 0.009 285.63);
+  --color-border-subtle: oklch(0.274 0.013 286.033);
 }
 
 html {
@@ -12,9 +16,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Subtle fade-in on scroll. The hidden state only applies when motion is
-   allowed, so users who prefer reduced motion (or have JS disabled) see
-   content immediately without any shift. */
+/* Subtle fade-in on scroll */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
@@ -28,4 +30,44 @@ body {
     opacity: 1;
     transform: none;
   }
+}
+
+/* Music player pulse animation */
+@keyframes music-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+  }
+}
+
+.music-playing {
+  animation: music-pulse 2s infinite;
+}
+
+/* Audio visualizer bars */
+@keyframes audio-bar {
+  0%, 100% {
+    height: 4px;
+  }
+  50% {
+    height: 16px;
+  }
+}
+
+.audio-bar {
+  animation: audio-bar 0.8s ease-in-out infinite;
+}
+
+.audio-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.audio-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.audio-bar:nth-child(4) {
+  animation-delay: 0.3s;
 }

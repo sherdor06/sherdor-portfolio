@@ -8,12 +8,12 @@ export default function Languages() {
         {languages.map((language) => (
           <li
             key={language.name}
-            className="rounded-xl border border-slate-200 bg-white px-5 py-3 shadow-sm"
+            className="rounded-xl border border-border-subtle bg-surface-card px-5 py-3 shadow-sm"
           >
-            <span className="text-base font-semibold text-slate-900">
+            <span className="text-base font-semibold text-white">
               {language.name}
             </span>
-            <span className="ml-2 text-sm text-slate-500">
+            <span className="ml-2 text-sm text-slate-400">
               {language.level}
             </span>
           </li>
