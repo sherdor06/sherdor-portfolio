@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useTheme } from "./ThemeProvider";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -47,8 +48,111 @@ function AirplaneIcon({ active }: { active: boolean }) {
   );
 }
 
+function FlutterF({
+  containerRef,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const [pos, setPos] = useState({ x: 60, y: 140 });
+  const [visible, setVisible] = useState(true);
+  const velRef = useRef({ x: 0.4, y: 0.3 });
+  const rafRef = useRef<number>(0);
+
+  const update = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const w = rect.width - 32;
+    const h = rect.height - 32;
+
+    setPos((prev) => {
+      let nx = prev.x + velRef.current.x;
+      let ny = prev.y + velRef.current.y;
+
+      if (nx < 4 || nx > w - 28) velRef.current.x *= -1;
+      if (ny < 4 || ny > h - 28) velRef.current.y *= -1;
+
+      nx = Math.max(4, Math.min(w - 28, nx));
+      ny = Math.max(4, Math.min(h - 28, ny));
+
+      return { x: nx, y: ny };
+    });
+
+    rafRef.current = requestAnimationFrame(update);
+  }, [containerRef]);
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [update]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleMouse = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const mx = e.clientX - rect.left - 14;
+      const my = e.clientY - rect.top - 14;
+
+      setPos((prev) => {
+        const dx = prev.x - mx;
+        const dy = prev.y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 60) {
+          const angle = Math.atan2(dy, dx);
+          const force = (60 - dist) / 60;
+          const nx = prev.x + Math.cos(angle) * force * 12;
+          const ny = prev.y + Math.sin(angle) * force * 12;
+
+          const w = rect.width - 32;
+          const h = rect.height - 32;
+          velRef.current.x = Math.cos(angle) * 2 + (Math.random() - 0.5) * 1;
+          velRef.current.y = Math.sin(angle) * 2 + (Math.random() - 0.5) * 1;
+
+          return {
+            x: Math.max(4, Math.min(w - 28, nx)),
+            y: Math.max(4, Math.min(h - 28, ny)),
+          };
+        }
+        return prev;
+      });
+    };
+
+    const handleLeave = () => {
+      setVisible(false);
+      setTimeout(() => setVisible(true), 300);
+    };
+
+    el.addEventListener("mousemove", handleMouse);
+    el.addEventListener("mouseleave", handleLeave);
+    return () => {
+      el.removeEventListener("mousemove", handleMouse);
+      el.removeEventListener("mouseleave", handleLeave);
+    };
+  }, [containerRef]);
+
+  return (
+    <div
+      className={`pointer-events-none absolute transition-opacity duration-300 ${
+        visible ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ left: pos.x, top: pos.y }}
+    >
+      <svg viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
+        <rect x="2" y="2" width="20" height="20" rx="4" fill="#02569B" />
+        <path d="M7 7h10v2.5H9.5V12H14v2.5H9.5V17H7V7z" fill="white" />
+      </svg>
+    </div>
+  );
+}
+
 export default function PhoneMockup() {
   const now = useRealtimeClock();
+  const { theme } = useTheme();
+  const screenRef = useRef<HTMLDivElement>(null);
 
   const hours = now.getHours().toString().padStart(2, "0");
   const minutes = now.getMinutes().toString().padStart(2, "0");
@@ -57,13 +161,19 @@ export default function PhoneMockup() {
   const date = now.getDate();
   const year = now.getFullYear();
 
+  const frameBorder =
+    theme === "light" ? "border-slate-300" : "border-slate-700";
+  const frameBg = theme === "light" ? "bg-slate-100" : "bg-black";
+
   return (
-    <div className="relative flex items-center justify-center" aria-hidden="true">
+    <div className="relative flex items-center justify-center">
       {/* Glow behind the phone */}
       <div className="absolute h-[500px] w-[280px] rounded-[3.5rem] bg-blue-500/10 blur-3xl" />
 
       {/* Phone frame */}
-      <div className="relative h-[500px] w-[250px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-2 border-slate-700 bg-black p-4 shadow-2xl shadow-blue-500/10">
+      <div
+        className={`relative h-[500px] w-[250px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-2 ${frameBorder} ${frameBg} p-4 shadow-2xl shadow-blue-500/10`}
+      >
         {/* Dynamic Island */}
         <div className="relative mx-auto mb-6 h-7 w-24 rounded-full bg-black">
           <div className="absolute inset-0 rounded-full border border-slate-800" />
@@ -71,7 +181,9 @@ export default function PhoneMockup() {
         </div>
 
         {/* Screen content */}
-        <div className="space-y-4">
+        <div ref={screenRef} className="relative space-y-4 overflow-hidden">
+          <FlutterF containerRef={screenRef} />
+
           {/* Time / Lock screen */}
           <div className="text-center">
             <div className="text-2xl font-light tracking-widest text-white">
