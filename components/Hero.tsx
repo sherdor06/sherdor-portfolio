@@ -2,6 +2,7 @@ import { Mail, MapPin } from "lucide-react";
 import GithubIcon from "./GithubIcon";
 import PhoneMockup from "./PhoneMockup";
 import HeroBg from "./HeroBg";
+import LiquidMetaballs from "./LiquidMetaballs";
 import Spotlight from "./Spotlight";
 import { site } from "@/lib/content";
 
@@ -12,6 +13,7 @@ export default function Hero() {
       className="relative scroll-mt-20 overflow-hidden bg-surface py-20 sm:py-28"
     >
       <HeroBg />
+      <LiquidMetaballs />
       <Spotlight />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
         <div className="flex flex-col items-center gap-12 sm:flex-row">

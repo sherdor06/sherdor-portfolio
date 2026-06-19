@@ -150,12 +150,31 @@ body {
   }
 }
 
-/* Glassmorphism utility */
+/* Liquid Glass utility — translucent, saturated, with a specular top highlight */
 .glass-card {
+  position: relative;
+  overflow: hidden;
   background: var(--th-bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid var(--th-border);
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0) 45%
+  );
+}
+
+/* Keep card content above the specular highlight */
+.glass-card > * {
+  position: relative;
 }
 
 /* Audio visualizer bars */
@@ -240,5 +259,25 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .text-gradient {
     animation: none;
+  }
+}
+
+/* 5. Liquid metaballs — extra drift keyframe + reduced-motion guard */
+@keyframes blob-drift-4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  30% {
+    transform: translate(-36px, -28px) scale(1.12);
+  }
+  60% {
+    transform: translate(28px, 36px) scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metaball-layer span {
+    animation: none !important;
   }
 }
