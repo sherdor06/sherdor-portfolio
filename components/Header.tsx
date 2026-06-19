@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navLinks, site } from "@/lib/content";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function Header() {
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <a
@@ -32,6 +33,9 @@ export default function Header() {
               </a>
             </li>
           ))}
+          <li>
+            <ThemeToggle />
+          </li>
         </ul>
 
         {/* Mobile toggle */}
@@ -69,6 +73,9 @@ export default function Header() {
                 </a>
               </li>
             ))}
+            <li className="border-t border-border-subtle pt-3 mt-1 flex">
+              <ThemeToggle />
+            </li>
           </ul>
         </div>
       )}
