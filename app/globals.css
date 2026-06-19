@@ -16,19 +16,19 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Subtle fade-in on scroll */
+/* iOS-style spring reveal on scroll */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(24px) scale(0.96);
     transition:
-      opacity 600ms ease-out,
-      transform 600ms ease-out;
+      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .reveal[data-visible="true"] {
     opacity: 1;
-    transform: none;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -44,6 +44,31 @@ body {
 
 .music-playing {
   animation: music-pulse 2s infinite;
+}
+
+/* Phone floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* iOS-style spring reveal */
+@keyframes spring-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  60% {
+    transform: translateY(-4px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Audio visualizer bars */
