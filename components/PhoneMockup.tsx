@@ -199,18 +199,17 @@ export default function PhoneMockup() {
       {/* Glow behind the phone */}
       <div className={`absolute h-[500px] w-[280px] rounded-[3.5rem] blur-3xl ${glowColor}`} />
 
-      {/* Left side: Silent switch (top), Volume up, Volume down */}
-      <div className="absolute left-[-4px] top-[72px] h-[14px] w-[3px] rounded-r-sm bg-slate-500" />
-      <div className="absolute left-[-4px] top-[98px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
-      <div className="absolute left-[-4px] top-[138px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
-
-      {/* Right side: Power button */}
-      <div className="absolute right-[-4px] top-[110px] h-[40px] w-[3px] rounded-l-sm bg-slate-600" />
-
       {/* Phone frame */}
       <div
         className={`relative h-[500px] w-[242px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-[3px] ${frameBorder} bg-black p-[3px] shadow-2xl shadow-blue-500/10`}
       >
+        {/* Left side: Silent switch (top), Volume up, Volume down */}
+        <div className="absolute left-[-4px] top-[72px] h-[14px] w-[3px] rounded-r-sm bg-slate-500" />
+        <div className="absolute left-[-4px] top-[98px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
+        <div className="absolute left-[-4px] top-[138px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
+
+        {/* Right side: Power button */}
+        <div className="absolute right-[-4px] top-[110px] h-[40px] w-[3px] rounded-l-sm bg-slate-600" />
         {/* Inner bezel / screen area */}
         <div className={`h-full w-full overflow-hidden rounded-[2.7rem] ${innerBg}`}>
           {/* Dynamic Island */}
