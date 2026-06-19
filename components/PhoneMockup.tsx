@@ -199,13 +199,13 @@ export default function PhoneMockup() {
       {/* Glow behind the phone */}
       <div className={`absolute h-[500px] w-[280px] rounded-[3.5rem] blur-3xl ${glowColor}`} />
 
-      {/* Volume buttons (left side) */}
-      <div className="absolute left-[-4px] top-24 h-8 w-[3px] rounded-r-sm bg-slate-600" />
-      <div className="absolute left-[-4px] top-36 h-8 w-[3px] rounded-r-sm bg-slate-600" />
-      <div className="absolute left-[-4px] top-52 h-12 w-[3px] rounded-r-sm bg-slate-500" />
+      {/* Left side: Silent switch (top), Volume up, Volume down */}
+      <div className="absolute left-[-4px] top-[72px] h-[14px] w-[3px] rounded-r-sm bg-slate-500" />
+      <div className="absolute left-[-4px] top-[98px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
+      <div className="absolute left-[-4px] top-[138px] h-[30px] w-[3px] rounded-r-sm bg-slate-600" />
 
-      {/* Power button (right side) */}
-      <div className="absolute right-[-4px] top-32 h-10 w-[3px] rounded-l-sm bg-slate-600" />
+      {/* Right side: Power button */}
+      <div className="absolute right-[-4px] top-[110px] h-[40px] w-[3px] rounded-l-sm bg-slate-600" />
 
       {/* Phone frame */}
       <div
@@ -214,13 +214,13 @@ export default function PhoneMockup() {
         {/* Inner bezel / screen area */}
         <div className={`h-full w-full overflow-hidden rounded-[2.7rem] ${innerBg}`}>
           {/* Dynamic Island */}
-          <div className="relative mx-auto mt-5 h-7 w-24 rounded-full bg-black">
+          <div className="relative mx-auto mt-2.5 h-6 w-[76px] rounded-full bg-black">
             <div className="absolute inset-0 rounded-full border border-slate-800" />
-            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-800" />
+            <div className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-800" />
           </div>
 
           {/* Screen content */}
-          <div ref={screenRef} className="relative mt-6 space-y-4 overflow-hidden px-4 pb-4">
+          <div ref={screenRef} className="relative mt-5 space-y-4 overflow-hidden px-4 pb-4">
           <FlutterF containerRef={screenRef} />
 
           {/* Time / Lock screen */}
