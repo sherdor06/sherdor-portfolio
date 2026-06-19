@@ -53,77 +53,99 @@ function FlutterF({
 }: {
   containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const [pos, setPos] = useState({ x: 60, y: 140 });
-  const [visible, setVisible] = useState(true);
-  const velRef = useRef({ x: 0.4, y: 0.3 });
-  const rafRef = useRef<number>(0);
+  const posRef = useRef({ x: 60, y: 140 });
+  const velRef = useRef({ x: 0.5, y: 0.4 });
+  const [opacity, setOpacity] = useState(1);
+  const [, forceRender] = useState(0);
 
-  const update = useCallback(() => {
+  const sync = useCallback(() => {
+    forceRender((n) => (n + 1) % 1000);
+  }, []);
+
+  useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-
     const rect = el.getBoundingClientRect();
-    const w = rect.width - 32;
-    const h = rect.height - 32;
+    const margin = 8;
+    const w = rect.width - margin * 2;
+    const h = rect.height - margin * 2;
 
-    setPos((prev) => {
-      let nx = prev.x + velRef.current.x;
-      let ny = prev.y + velRef.current.y;
+    let raf: number;
 
-      if (nx < 4 || nx > w - 28) velRef.current.x *= -1;
-      if (ny < 4 || ny > h - 28) velRef.current.y *= -1;
+    const tick = () => {
+      const p = posRef.current;
+      const v = velRef.current;
 
-      nx = Math.max(4, Math.min(w - 28, nx));
-      ny = Math.max(4, Math.min(h - 28, ny));
+      let nx = p.x + v.x;
+      let ny = p.y + v.y;
 
-      return { x: nx, y: ny };
-    });
+      if (nx < margin || nx > w - 28) {
+        v.x *= -0.8;
+        nx = Math.max(margin, Math.min(w - 28, nx));
+      }
+      if (ny < margin || ny > h - 28) {
+        v.y *= -0.8;
+        ny = Math.max(margin, Math.min(h - 28, ny));
+      }
 
-    rafRef.current = requestAnimationFrame(update);
-  }, [containerRef]);
+      const speed = Math.sqrt(v.x * v.x + v.y * v.y);
+      if (speed < 0.3 && speed > 0) {
+        const scale = 0.3 / speed;
+        v.x *= scale;
+        v.y *= scale;
+      }
+      if (speed > 2) {
+        const scale = 2 / speed;
+        v.x *= scale;
+        v.y *= scale;
+      }
 
-  useEffect(() => {
-    rafRef.current = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [update]);
+      posRef.current = { x: nx, y: ny };
+      sync();
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [containerRef, sync]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const margin = 8;
+    const w = rect.width - margin * 2;
+    const h = rect.height - margin * 2;
 
     const handleMouse = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const mx = e.clientX - rect.left - 14;
-      const my = e.clientY - rect.top - 14;
+      const r = el.getBoundingClientRect();
+      const mx = e.clientX - r.left;
+      const my = e.clientY - r.top;
+      const p = posRef.current;
+      const dx = p.x + 14 - mx;
+      const dy = p.y + 14 - my;
+      const dist = Math.sqrt(dx * dx + dy * dy);
 
-      setPos((prev) => {
-        const dx = prev.x - mx;
-        const dy = prev.y - my;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 60) {
-          const angle = Math.atan2(dy, dx);
-          const force = (60 - dist) / 60;
-          const nx = prev.x + Math.cos(angle) * force * 12;
-          const ny = prev.y + Math.sin(angle) * force * 12;
-
-          const w = rect.width - 32;
-          const h = rect.height - 32;
-          velRef.current.x = Math.cos(angle) * 2 + (Math.random() - 0.5) * 1;
-          velRef.current.y = Math.sin(angle) * 2 + (Math.random() - 0.5) * 1;
-
-          return {
-            x: Math.max(4, Math.min(w - 28, nx)),
-            y: Math.max(4, Math.min(h - 28, ny)),
-          };
-        }
-        return prev;
-      });
+      if (dist < 60) {
+        const angle = Math.atan2(dy, dx);
+        const force = (60 - dist) / 60;
+        const nx = p.x + Math.cos(angle) * force * 14;
+        const ny = p.y + Math.sin(angle) * force * 14;
+        posRef.current = {
+          x: Math.max(margin, Math.min(w - 28, nx)),
+          y: Math.max(margin, Math.min(h - 28, ny)),
+        };
+        velRef.current = {
+          x: Math.cos(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
+          y: Math.sin(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
+        };
+        sync();
+      }
     };
 
     const handleLeave = () => {
-      setVisible(false);
-      setTimeout(() => setVisible(true), 300);
+      setOpacity(0);
+      setTimeout(() => setOpacity(1), 200);
     };
 
     el.addEventListener("mousemove", handleMouse);
@@ -132,19 +154,18 @@ function FlutterF({
       el.removeEventListener("mousemove", handleMouse);
       el.removeEventListener("mouseleave", handleLeave);
     };
-  }, [containerRef]);
+  }, [containerRef, sync]);
 
   return (
     <div
-      className={`pointer-events-none absolute transition-opacity duration-300 ${
-        visible ? "opacity-100" : "opacity-0"
-      }`}
-      style={{ left: pos.x, top: pos.y }}
+      className="pointer-events-none absolute transition-opacity duration-200"
+      style={{ left: posRef.current.x, top: posRef.current.y, opacity }}
     >
-      <svg viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-lg">
-        <rect x="2" y="2" width="20" height="20" rx="4" fill="#02569B" />
-        <path d="M7 7h10v2.5H9.5V12H14v2.5H9.5V17H7V7z" fill="white" />
-      </svg>
+      <img
+        src="/flutter_logo.png"
+        alt=""
+        className="h-7 w-7 drop-shadow-lg"
+      />
     </div>
   );
 }
