@@ -7,21 +7,21 @@ export default function Experience() {
     <Section id="experience" title="Experience">
       <article className="glass-card rounded-xl p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold text-primary">
             {experience.role}{" "}
-            <span className="text-blue-400">· {experience.company}</span>
+            <span className="text-accent">· {experience.company}</span>
           </h3>
-          <span className="text-sm text-slate-500">{experience.period}</span>
+          <span className="text-sm text-muted">{experience.period}</span>
         </div>
 
         <ul className="mt-5 space-y-3">
           {experience.bullets.map((bullet) => (
             <li key={bullet} className="flex gap-3">
               <CheckCircle2
-                className="mt-0.5 h-5 w-5 shrink-0 text-blue-400"
+                className="mt-0.5 h-5 w-5 shrink-0 text-accent"
                 aria-hidden="true"
               />
-              <span className="text-base leading-relaxed text-slate-400">
+              <span className="text-base leading-relaxed text-secondary">
                 {bullet}
               </span>
             </li>

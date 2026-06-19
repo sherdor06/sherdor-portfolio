@@ -21,7 +21,7 @@ export default function Section({
     >
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <Reveal>
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
             {title}
           </h2>
           <div className="mt-6">{children}</div>

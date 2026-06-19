@@ -11,28 +11,28 @@ export default function Footer() {
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Contact
         </h2>
-        <p className="mt-4 text-base text-slate-400">
+        <p className="mt-4 text-base text-secondary">
           Feel free to reach out — I&apos;m open to new opportunities.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-8">
           <a
             href={`mailto:${site.email}`}
-            className="inline-flex items-center gap-2 text-base font-medium text-slate-300 transition-colors hover:text-blue-400"
+            className="inline-flex items-center gap-2 text-base font-medium text-secondary transition-colors hover:text-accent"
           >
-            <Mail className="h-5 w-5 text-blue-400" aria-hidden="true" />
+            <Mail className="h-5 w-5 text-accent" aria-hidden="true" />
             {site.email}
           </a>
           <a
             href={site.phoneHref}
-            className="inline-flex items-center gap-2 text-base font-medium text-slate-300 transition-colors hover:text-blue-400"
+            className="inline-flex items-center gap-2 text-base font-medium text-secondary transition-colors hover:text-accent"
           >
-            <Phone className="h-5 w-5 text-blue-600" aria-hidden="true" />
+            <Phone className="h-5 w-5 text-accent" aria-hidden="true" />
             {site.phone}
           </a>
         </div>
 
-        <p className="mt-12 text-sm text-slate-500">
+        <p className="mt-12 text-sm text-muted">
           © {new Date().getFullYear()} {site.name}
         </p>
       </div>

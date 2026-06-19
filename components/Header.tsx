@@ -15,7 +15,7 @@ export default function Header() {
       >
         <a
           href="#top"
-          className="text-base font-bold tracking-tight text-white"
+          className="text-base font-bold tracking-tight text-primary"
         >
           {site.name}
         </a>
@@ -26,7 +26,7 @@ export default function Header() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-slate-400 transition-colors hover:text-blue-400"
+                className="text-sm font-medium text-secondary transition-colors hover:text-accent"
               >
                 {link.label}
               </a>
@@ -41,7 +41,7 @@ export default function Header() {
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 md:hidden"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-secondary transition-colors hover:bg-surface-card md:hidden"
         >
           {open ? (
             <X className="h-6 w-6" aria-hidden="true" />
@@ -63,7 +63,7 @@ export default function Header() {
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-slate-400 transition-colors hover:bg-slate-800 hover:text-blue-400"
+                  className="block rounded-lg px-2 py-3 text-base font-medium text-secondary transition-colors hover:bg-surface-card hover:text-accent"
                 >
                   {link.label}
                 </a>

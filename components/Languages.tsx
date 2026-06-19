@@ -10,10 +10,10 @@ export default function Languages() {
             key={language.name}
             className="glass-card rounded-xl px-5 py-3 shadow-sm"
           >
-            <span className="text-base font-semibold text-white">
+            <span className="text-base font-semibold text-primary">
               {language.name}
             </span>
-            <span className="ml-2 text-sm text-slate-400">
+            <span className="ml-2 text-sm text-secondary">
               {language.level}
             </span>
           </li>

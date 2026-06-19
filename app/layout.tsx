@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { site } from "@/lib/content";
+import ThemeProvider from "@/components/ThemeProvider";
 import MusicPlayer from "@/components/MusicPlayer";
 import "./globals.css";
 
@@ -32,9 +33,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
-      <body className="min-h-full bg-surface text-slate-100 antialiased">
-        {children}
-        <MusicPlayer />
+      <body className="min-h-full bg-surface text-primary antialiased">
+        <ThemeProvider>
+          {children}
+          <MusicPlayer />
+        </ThemeProvider>
       </body>
     </html>
   );
