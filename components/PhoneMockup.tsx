@@ -187,6 +187,13 @@ export default function PhoneMockup() {
       ? "bg-purple-500/15"
       : "bg-blue-500/10";
 
+  const isLight = theme === "light";
+  const frameBorder = isLight ? "border-slate-300" : "border-slate-700";
+  const frameBg = isLight ? "bg-white" : "bg-black";
+  const innerBg = isLight ? "bg-white" : "bg-black";
+  const clockColor = isLight ? "text-slate-900" : "text-white";
+  const homeIndicator = isLight ? "bg-black/20" : "bg-white/30";
+
   return (
     <div className="relative flex items-center justify-center">
       {/* Glow behind the phone */}
@@ -202,15 +209,12 @@ export default function PhoneMockup() {
 
       {/* Phone frame */}
       <div
-        className="relative h-[500px] w-[242px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-[3px] border-slate-700 bg-black p-[3px] shadow-2xl shadow-blue-500/10"
+        className={`relative h-[500px] w-[242px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-[3px] ${frameBorder} bg-black p-[3px] shadow-2xl shadow-blue-500/10`}
       >
-        {/* Inner bezel */}
-        <div className="h-full w-full overflow-hidden rounded-[2.7rem] bg-black">
-          {/* Speaker grille */}
-          <div className="absolute left-1/2 top-[18px] z-10 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-800" />
-
+        {/* Inner bezel / screen area */}
+        <div className={`h-full w-full overflow-hidden rounded-[2.7rem] ${innerBg}`}>
           {/* Dynamic Island */}
-          <div className="relative z-10 mx-auto mt-5 h-7 w-24 rounded-full bg-black">
+          <div className="relative mx-auto mt-5 h-7 w-24 rounded-full bg-black">
             <div className="absolute inset-0 rounded-full border border-slate-800" />
             <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-800" />
           </div>
@@ -221,7 +225,7 @@ export default function PhoneMockup() {
 
           {/* Time / Lock screen */}
           <div className="text-center">
-            <div className="text-2xl font-light tracking-widest text-white">
+            <div className={`text-2xl font-light tracking-widest ${clockColor}`}>
               {hours}:{minutes}
             </div>
             <div className="text-[10px] text-slate-500">
@@ -236,17 +240,17 @@ export default function PhoneMockup() {
               <div className="text-xl font-thin text-white">24°</div>
               <div className="text-[10px] text-white/60">Sunny</div>
             </div>
-            <div className="col-span-2 rounded-2xl bg-slate-800 p-3">
-              <div className="flex items-center gap-1 text-[10px] text-slate-400">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
+            <div className="col-span-2 rounded-2xl bg-slate-200 p-3">
+              <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
                 Activity
               </div>
               <div className="mt-1 flex gap-1">
-                <div className="h-6 w-2 rounded-full bg-green-400/60" />
-                <div className="h-4 w-2 self-end rounded-full bg-green-400/40" />
-                <div className="h-7 w-2 rounded-full bg-green-400/80" />
-                <div className="h-5 w-2 self-end rounded-full bg-green-400/50" />
-                <div className="h-6 w-2 rounded-full bg-green-400/60" />
+                <div className="h-6 w-2 rounded-full bg-green-500/60" />
+                <div className="h-4 w-2 self-end rounded-full bg-green-500/40" />
+                <div className="h-7 w-2 rounded-full bg-green-500/80" />
+                <div className="h-5 w-2 self-end rounded-full bg-green-500/50" />
+                <div className="h-6 w-2 rounded-full bg-green-500/60" />
               </div>
             </div>
           </div>
@@ -271,7 +275,7 @@ export default function PhoneMockup() {
                               ? "bg-teal-500"
                               : i === 6
                                 ? "bg-indigo-500"
-                                : "bg-slate-700"
+                                : "bg-slate-300"
                 }`}
               />
             ))}
@@ -285,14 +289,14 @@ export default function PhoneMockup() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/20">
               <BluetoothIcon active />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800">
+            <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isLight ? "bg-slate-200" : "bg-slate-800"}`}>
               <AirplaneIcon active={false} />
             </div>
           </div>
 
           {/* iOS Home indicator */}
           <div className="flex justify-center pt-1">
-            <div className="h-1 w-28 rounded-full bg-white/30" />
+            <div className={`h-1 w-28 rounded-full ${homeIndicator}`} />
           </div>
         </div>
       </div>
