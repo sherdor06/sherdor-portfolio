@@ -182,27 +182,41 @@ export default function PhoneMockup() {
   const date = now.getDate();
   const year = now.getFullYear();
 
-  const frameBorder =
-    theme === "light" ? "border-slate-300" : "border-slate-700";
-  const frameBg = theme === "light" ? "bg-slate-100" : "bg-black";
+  const glowColor =
+    theme === "colorful"
+      ? "bg-purple-500/15"
+      : "bg-blue-500/10";
 
   return (
     <div className="relative flex items-center justify-center">
       {/* Glow behind the phone */}
-      <div className="absolute h-[500px] w-[280px] rounded-[3.5rem] bg-blue-500/10 blur-3xl" />
+      <div className={`absolute h-[500px] w-[280px] rounded-[3.5rem] blur-3xl ${glowColor}`} />
+
+      {/* Volume buttons (left side) */}
+      <div className="absolute left-[-4px] top-24 h-8 w-[3px] rounded-r-sm bg-slate-600" />
+      <div className="absolute left-[-4px] top-36 h-8 w-[3px] rounded-r-sm bg-slate-600" />
+      <div className="absolute left-[-4px] top-52 h-12 w-[3px] rounded-r-sm bg-slate-500" />
+
+      {/* Power button (right side) */}
+      <div className="absolute right-[-4px] top-32 h-10 w-[3px] rounded-l-sm bg-slate-600" />
 
       {/* Phone frame */}
       <div
-        className={`relative h-[500px] w-[250px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-2 ${frameBorder} ${frameBg} p-4 shadow-2xl shadow-blue-500/10`}
+        className="relative h-[500px] w-[242px] animate-[float_6s_ease-in-out_infinite] rounded-[3rem] border-[3px] border-slate-700 bg-black p-[3px] shadow-2xl shadow-blue-500/10"
       >
-        {/* Dynamic Island */}
-        <div className="relative mx-auto mb-6 h-7 w-24 rounded-full bg-black">
-          <div className="absolute inset-0 rounded-full border border-slate-800" />
-          <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-800" />
-        </div>
+        {/* Inner bezel */}
+        <div className="h-full w-full overflow-hidden rounded-[2.7rem] bg-black">
+          {/* Speaker grille */}
+          <div className="absolute left-1/2 top-[18px] z-10 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-800" />
 
-        {/* Screen content */}
-        <div ref={screenRef} className="relative space-y-4 overflow-hidden">
+          {/* Dynamic Island */}
+          <div className="relative z-10 mx-auto mt-5 h-7 w-24 rounded-full bg-black">
+            <div className="absolute inset-0 rounded-full border border-slate-800" />
+            <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-800" />
+          </div>
+
+          {/* Screen content */}
+          <div ref={screenRef} className="relative mt-6 space-y-4 overflow-hidden px-4 pb-4">
           <FlutterF containerRef={screenRef} />
 
           {/* Time / Lock screen */}
@@ -282,6 +296,7 @@ export default function PhoneMockup() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
