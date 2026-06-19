@@ -1,4 +1,62 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+function useRealtimeClock() {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return now;
+}
+
+function WifiIcon({ active }: { active: boolean }) {
+  const c = active ? "text-blue-400" : "text-slate-600";
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={`h-4 w-4 ${c}`} stroke="currentColor" strokeWidth="2">
+      <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+      <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+      <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function BluetoothIcon({ active }: { active: boolean }) {
+  const c = active ? "text-green-400" : "text-slate-600";
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={`h-4 w-4 ${c}`} stroke="currentColor" strokeWidth="2">
+      <polyline points="6 7 18 13 12 17 12 2 18 6 6 13" />
+    </svg>
+  );
+}
+
+function AirplaneIcon({ active }: { active: boolean }) {
+  const c = active ? "text-orange-400" : "text-slate-600";
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={`h-4 w-4 ${c}`} stroke="currentColor" strokeWidth="2">
+      <path d="M22 2 11 13" />
+      <path d="M22 2 15 22l-5-8-8-5z" />
+    </svg>
+  );
+}
+
 export default function PhoneMockup() {
+  const now = useRealtimeClock();
+
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const dayName = DAYS[now.getDay()];
+  const monthName = MONTHS[now.getMonth()];
+  const date = now.getDate();
+  const year = now.getFullYear();
+
   return (
     <div className="relative flex items-center justify-center" aria-hidden="true">
       {/* Glow behind the phone */}
@@ -16,8 +74,12 @@ export default function PhoneMockup() {
         <div className="space-y-4">
           {/* Time / Lock screen */}
           <div className="text-center">
-            <div className="text-2xl font-light tracking-widest text-white">9:41</div>
-            <div className="text-[10px] text-slate-500">Friday, June 19</div>
+            <div className="text-2xl font-light tracking-widest text-white">
+              {hours}:{minutes}
+            </div>
+            <div className="text-[10px] text-slate-500">
+              {dayName}, {monthName} {date}, {year}
+            </div>
           </div>
 
           {/* iOS Widgets grid */}
@@ -69,20 +131,15 @@ export default function PhoneMockup() {
           </div>
 
           {/* iOS Control Center toggles */}
-          <div className="flex gap-2">
-            <div className="flex flex-1 items-center gap-2 rounded-xl bg-blue-500/20 p-2.5">
-              <div className="h-4 w-4 rotate-45 rounded-md border border-blue-400" />
-              <span className="text-[10px] text-blue-400">Wi-Fi</span>
+          <div className="flex justify-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20">
+              <WifiIcon active />
             </div>
-            <div className="flex flex-1 items-center gap-2 rounded-xl bg-green-500/20 p-2.5">
-              <div className="h-4 w-4 rounded-full border-2 border-green-400">
-                <div className="m-0.5 h-2 w-2 rounded-full bg-green-400" />
-              </div>
-              <span className="text-[10px] text-green-400">BT</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500/20">
+              <BluetoothIcon active />
             </div>
-            <div className="flex flex-1 items-center gap-2 rounded-xl bg-slate-800 p-2.5">
-              <div className="h-4 w-4 rounded-full border border-slate-600" />
-              <span className="text-[10px] text-slate-500">Air</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800">
+              <AirplaneIcon active={false} />
             </div>
           </div>
 
