@@ -14,53 +14,37 @@ export default function MusicPlayer() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    let blocked = true;
+    let started = false;
 
-    const handleEnded = () => {
-      setPlaying(false);
-      audio.currentTime = 0;
-    };
-
-    audio.addEventListener("ended", handleEnded);
-
-    const tryAutoplay = () => {
+    const startPlayback = () => {
+      if (started) return;
       audio.play().then(() => {
-        blocked = false;
+        started = true;
         setPlaying(true);
+        setAutoplayBlocked(false);
       }).catch(() => {
         setAutoplayBlocked(true);
       });
     };
 
-    if (audio.readyState >= 3) {
-      tryAutoplay();
-    } else {
-      audio.addEventListener("canplaythrough", tryAutoplay, { once: true });
-    }
-
     const handleInteraction = () => {
-      if (blocked) {
-        audio.play().then(() => {
-          blocked = false;
-          setPlaying(true);
-          setAutoplayBlocked(false);
-        }).catch(() => {});
-      }
-      document.removeEventListener("click", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
-      document.removeEventListener("touchstart", handleInteraction);
+      if (!started) startPlayback();
     };
 
-    document.addEventListener("click", handleInteraction);
-    document.addEventListener("keydown", handleInteraction);
-    document.addEventListener("touchstart", handleInteraction);
+    audio.addEventListener("canplaythrough", startPlayback, { once: true });
+
+    if (audio.readyState >= 3) {
+      audio.removeEventListener("canplaythrough", startPlayback);
+      startPlayback();
+    }
+
+    document.addEventListener("pointerdown", handleInteraction, { once: true });
+    document.addEventListener("keydown", handleInteraction, { once: true });
 
     return () => {
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("canplaythrough", tryAutoplay);
-      document.removeEventListener("click", handleInteraction);
+      audio.removeEventListener("canplaythrough", startPlayback);
+      document.removeEventListener("pointerdown", handleInteraction);
       document.removeEventListener("keydown", handleInteraction);
-      document.removeEventListener("touchstart", handleInteraction);
     };
   }, []);
 
