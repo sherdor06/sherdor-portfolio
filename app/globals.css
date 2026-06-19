@@ -183,3 +183,62 @@ body {
 .audio-bar:nth-child(4) {
   animation-delay: 0.3s;
 }
+
+/* ── Sensational animations ─────────────────────────────────────────── */
+
+/* 1a. Flowing gradient on the hero name */
+.text-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--th-accent),
+    #a855f7,
+    #2dd4bf,
+    var(--th-accent)
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-flow 6s linear infinite;
+}
+
+@keyframes gradient-flow {
+  to {
+    background-position: 300% 0;
+  }
+}
+
+/* 1b. Staggered hero entrance (only when motion is allowed) */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-rise {
+    opacity: 0;
+    animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 3. Cursor spotlight over the hero */
+.spotlight {
+  background: radial-gradient(
+    450px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--th-accent) 22%, transparent),
+    transparent 70%
+  );
+  transition: opacity 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient {
+    animation: none;
+  }
+}

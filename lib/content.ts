@@ -32,6 +32,12 @@ export const experience = {
   ],
 } as const;
 
+export const stats = [
+  { value: 20000, suffix: "+", label: "Users reached" },
+  { value: 15, suffix: "+", label: "Bugs resolved" },
+  { value: 3, suffix: "", label: "Study tools shipped" },
+] as const;
+
 export const skillGroups = [
   { label: "Mobile", items: ["Flutter", "Dart", "Cross-Platform Development"] },
   { label: "State Management", items: ["GetX", "Provider"] },

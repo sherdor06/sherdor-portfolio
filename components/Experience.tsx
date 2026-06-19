@@ -1,6 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
 import Section from "./Section";
-import { experience } from "@/lib/content";
+import CountUp from "./CountUp";
+import { experience, stats } from "@/lib/content";
 
 export default function Experience() {
   return (
@@ -27,6 +28,18 @@ export default function Experience() {
             </li>
           ))}
         </ul>
+
+        <dl className="mt-6 grid grid-cols-3 gap-4 border-t border-border-subtle pt-6">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="text-2xl font-bold text-accent sm:text-3xl">
+                <CountUp end={stat.value} suffix={stat.suffix} />
+              </dd>
+              <p className="mt-1 text-xs text-muted sm:text-sm">{stat.label}</p>
+            </div>
+          ))}
+        </dl>
       </article>
     </Section>
   );

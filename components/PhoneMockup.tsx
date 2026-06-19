@@ -175,6 +175,25 @@ export default function PhoneMockup() {
   const { theme } = useTheme();
   const screenRef = useRef<HTMLDivElement>(null);
 
+  // 3D tilt toward the cursor (disabled under reduced motion).
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const reduceRef = useRef(false);
+  useEffect(() => {
+    reduceRef.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+  }, []);
+
+  const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduceRef.current) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    const MAX = 12;
+    setTilt({ rx: -py * 2 * MAX, ry: px * 2 * MAX });
+  };
+  const resetTilt = () => setTilt({ rx: 0, ry: 0 });
+
   const hours = now.getHours().toString().padStart(2, "0");
   const minutes = now.getMinutes().toString().padStart(2, "0");
   const dayName = DAYS[now.getDay()];
@@ -195,7 +214,15 @@ export default function PhoneMockup() {
   const homeIndicator = isLight ? "bg-black/20" : "bg-white/30";
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div
+      className="relative flex items-center justify-center [transform-style:preserve-3d]"
+      onMouseMove={handleTilt}
+      onMouseLeave={resetTilt}
+      style={{
+        transform: `perspective(900px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+        transition: "transform 150ms ease-out",
+      }}
+    >
       {/* Glow behind the phone */}
       <div className={`absolute h-[500px] w-[280px] rounded-[3.5rem] blur-3xl ${glowColor}`} />
 
