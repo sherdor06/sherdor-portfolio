@@ -55,26 +55,73 @@ function FlutterF({
 }) {
   const posRef = useRef({ x: 60, y: 140 });
   const velRef = useRef({ x: 0.5, y: 0.4 });
+  const mouseRef = useRef<{ x: number; y: number } | null>(null);
   const [, forceRender] = useState(0);
 
-  const sync = useCallback(() => {
+  const sync =   useCallback(() => {
     forceRender((n) => (n + 1) % 1000);
   }, []);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
+    const handleMouse = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+
+    const handleLeave = () => {
+      mouseRef.current = null;
+    };
+
+    el.addEventListener("mousemove", handleMouse);
+    el.addEventListener("mouseleave", handleLeave);
+    return () => {
+      el.removeEventListener("mousemove", handleMouse);
+      el.removeEventListener("mouseleave", handleLeave);
+    };
+  }, [containerRef]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
     const rect = el.getBoundingClientRect();
     const margin = 8;
-    const w = rect.width - margin * 2;
-    const h = rect.height - margin * 2;
     const size = 28;
+    let w = rect.width - margin * 2;
+    let h = rect.height - margin * 2;
+    const repulsionRadius = 60;
+    const repulsionStrength = 2.5;
 
     let raf: number;
 
     const tick = () => {
       const p = posRef.current;
       const v = velRef.current;
+      const r = el.getBoundingClientRect();
+      w = r.width - margin * 2;
+      h = r.height - margin * 2;
+
+      let ax = 0;
+      let ay = 0;
+
+      const m = mouseRef.current;
+      if (m) {
+        const cx = p.x + size / 2;
+        const cy = p.y + size / 2;
+        const dx = cx - m.x;
+        const dy = cy - m.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < repulsionRadius && dist > 0.01) {
+          const force = (repulsionRadius - dist) / repulsionRadius;
+          ax += (dx / dist) * force * repulsionStrength;
+          ay += (dy / dist) * force * repulsionStrength;
+        }
+      }
+
+      v.x += ax;
+      v.y += ay;
 
       let nx = p.x + v.x;
       let ny = p.y + v.y;
@@ -94,8 +141,8 @@ function FlutterF({
         v.x *= scale;
         v.y *= scale;
       }
-      if (speed > 2) {
-        const scale = 2 / speed;
+      if (speed > 3) {
+        const scale = 3 / speed;
         v.x *= scale;
         v.y *= scale;
       }
@@ -107,43 +154,6 @@ function FlutterF({
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [containerRef, sync]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const margin = 8;
-    const w = rect.width - margin * 2;
-    const h = rect.height - margin * 2;
-    const size = 28;
-
-    const handleMouse = (e: MouseEvent) => {
-      const r = el.getBoundingClientRect();
-      const mx = e.clientX - r.left;
-      const my = e.clientY - r.top;
-      const p = posRef.current;
-      const cx = p.x + size / 2;
-      const cy = p.y + size / 2;
-      const dx = cx - mx;
-      const dy = cy - my;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < 60) {
-        const angle = Math.atan2(dy, dx);
-        const force = (60 - dist) / 60;
-        const nx = p.x + Math.cos(angle) * force * 14;
-        const ny = p.y + Math.sin(angle) * force * 14;
-        posRef.current = {
-          x: Math.max(margin, Math.min(w - size, nx)),
-          y: Math.max(margin, Math.min(h - size, ny)),
-        };
-        sync();
-      }
-    };
-
-    el.addEventListener("mousemove", handleMouse);
-    return () => el.removeEventListener("mousemove", handleMouse);
   }, [containerRef, sync]);
 
   return (
