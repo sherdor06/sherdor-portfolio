@@ -55,7 +55,6 @@ function FlutterF({
 }) {
   const posRef = useRef({ x: 60, y: 140 });
   const velRef = useRef({ x: 0.5, y: 0.4 });
-  const [opacity, setOpacity] = useState(1);
   const [, forceRender] = useState(0);
 
   const sync = useCallback(() => {
@@ -69,6 +68,7 @@ function FlutterF({
     const margin = 8;
     const w = rect.width - margin * 2;
     const h = rect.height - margin * 2;
+    const size = 28;
 
     let raf: number;
 
@@ -79,13 +79,13 @@ function FlutterF({
       let nx = p.x + v.x;
       let ny = p.y + v.y;
 
-      if (nx < margin || nx > w - 28) {
+      if (nx < margin || nx > w - size) {
         v.x *= -0.8;
-        nx = Math.max(margin, Math.min(w - 28, nx));
+        nx = Math.max(margin, Math.min(w - size, nx));
       }
-      if (ny < margin || ny > h - 28) {
+      if (ny < margin || ny > h - size) {
         v.y *= -0.8;
-        ny = Math.max(margin, Math.min(h - 28, ny));
+        ny = Math.max(margin, Math.min(h - size, ny));
       }
 
       const speed = Math.sqrt(v.x * v.x + v.y * v.y);
@@ -116,14 +116,17 @@ function FlutterF({
     const margin = 8;
     const w = rect.width - margin * 2;
     const h = rect.height - margin * 2;
+    const size = 28;
 
     const handleMouse = (e: MouseEvent) => {
       const r = el.getBoundingClientRect();
       const mx = e.clientX - r.left;
       const my = e.clientY - r.top;
       const p = posRef.current;
-      const dx = p.x + 14 - mx;
-      const dy = p.y + 14 - my;
+      const cx = p.x + size / 2;
+      const cy = p.y + size / 2;
+      const dx = cx - mx;
+      const dy = cy - my;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < 60) {
@@ -132,34 +135,21 @@ function FlutterF({
         const nx = p.x + Math.cos(angle) * force * 14;
         const ny = p.y + Math.sin(angle) * force * 14;
         posRef.current = {
-          x: Math.max(margin, Math.min(w - 28, nx)),
-          y: Math.max(margin, Math.min(h - 28, ny)),
-        };
-        velRef.current = {
-          x: Math.cos(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
-          y: Math.sin(angle) * 1.2 + (Math.random() - 0.5) * 0.6,
+          x: Math.max(margin, Math.min(w - size, nx)),
+          y: Math.max(margin, Math.min(h - size, ny)),
         };
         sync();
       }
     };
 
-    const handleLeave = () => {
-      setOpacity(0);
-      setTimeout(() => setOpacity(1), 200);
-    };
-
     el.addEventListener("mousemove", handleMouse);
-    el.addEventListener("mouseleave", handleLeave);
-    return () => {
-      el.removeEventListener("mousemove", handleMouse);
-      el.removeEventListener("mouseleave", handleLeave);
-    };
+    return () => el.removeEventListener("mousemove", handleMouse);
   }, [containerRef, sync]);
 
   return (
     <div
-      className="pointer-events-none absolute transition-opacity duration-200"
-      style={{ left: posRef.current.x, top: posRef.current.y, opacity }}
+      className="pointer-events-none absolute"
+      style={{ left: posRef.current.x, top: posRef.current.y }}
     >
       <img
         src="/flutter_logo.png"
