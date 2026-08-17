@@ -1,5 +1,6 @@
 import { Mail, MapPin } from "lucide-react";
 import GithubIcon from "./GithubIcon";
+import LinkedinIcon from "./LinkedinIcon";
 import PhoneMockup from "./PhoneMockup";
 import HeroBg from "./HeroBg";
 import LiquidMetaballs from "./LiquidMetaballs";
@@ -58,10 +59,21 @@ export default function Hero() {
               </a>
               <a
                 href={site.github}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg border border-border-subtle bg-surface-card px-5 py-2.5 text-sm font-semibold text-secondary shadow-sm transition-colors hover:bg-surface-alt focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 <GithubIcon className="h-4 w-4" />
                 GitHub
+              </a>
+              <a
+                href={site.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-subtle bg-surface-card px-5 py-2.5 text-sm font-semibold text-secondary shadow-sm transition-colors hover:bg-surface-alt focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                <LinkedinIcon className="h-4 w-4" />
+                LinkedIn
               </a>
             </div>
           </div>

@@ -10,8 +10,9 @@ export const site = {
   phone: "+998 94 681 15 25",
   phoneHref: "tel:+998946811525",
   github: "https://github.com/sherdor06",
+  linkedin: "https://www.linkedin.com/in/sherdor-ergashov-abbb4a331",
   about:
-    "Tashkent-based Flutter Developer with production experience at Scoreup.uz, currently a part-time IT student. Strong in UI layout optimization, REST API integration, and multimedia components. Uses modern AI-assisted workflows to ship clean mobile features at an accelerated pace.",
+    "Tashkent-based mobile developer at UZINFOCOM, with production Flutter experience from Scoreup.uz, currently a part-time IT student. Strong in UI layout optimization, REST API integration, and multimedia components. Uses modern AI-assisted workflows to ship clean mobile features at an accelerated pace.",
 } as const;
 
 export const navLinks = [
@@ -21,22 +22,49 @@ export const navLinks = [
   { label: "Contact", href: "#contact" },
 ] as const;
 
-export const experience = {
-  role: "Flutter Developer",
-  company: "Scoreup.uz",
-  period: "03/2026 – Present",
-  bullets: [
-    "Built 3 study tools (Writing Samples, Typing, Podcasts) shipped to 20,000+ users; upgraded existing CEFR and IELTS test modules.",
-    "Developed a Live Chat feature, platform-specific deep-linking, custom animations, and an iOS Liquid Glass navigation bar.",
-    "Resolved 15+ production bugs (RenderFlex overflows, state persistence, iOS keyboard conflicts) across CEFR and IELTS modules.",
-  ],
-} as const;
+export type Job = {
+  role: string;
+  company: string;
+  /** When set, the company name links out to its site. */
+  companyUrl?: string;
+  /** Short clarifier under the heading, e.g. what the company is. */
+  companyNote?: string;
+  period: string;
+  /** One-liner for roles too new to have shipped results yet. */
+  summary?: string;
+  bullets?: string[];
+  /** Renders as a count-up strip inside that role's card. */
+  stats?: { value: number; suffix: string; label: string }[];
+};
 
-export const stats = [
-  { value: 20000, suffix: "+", label: "Users reached" },
-  { value: 15, suffix: "+", label: "Bugs resolved" },
-  { value: 3, suffix: "", label: "Study tools shipped" },
-] as const;
+// Most recent role first.
+export const experiences: Job[] = [
+  {
+    role: "Mobile Developer",
+    company: "UZINFOCOM",
+    companyUrl: "https://uzinfocom.uz/",
+    companyNote: "Single Integrator for state information systems",
+    period: "08/2026 – Present",
+    summary:
+      "Building cross-platform mobile products with Flutter at Uzbekistan's national IT integrator.",
+  },
+  {
+    role: "Flutter Developer",
+    company: "Scoreup.uz",
+    companyUrl: "https://scoreup.uz/",
+    period: "03/2026 – Present",
+    bullets: [
+      "Built 3 study tools (Writing Samples, Typing, Podcasts) shipped to 20,000+ users; upgraded existing CEFR and IELTS test modules.",
+      "Developed a Live Chat feature, platform-specific deep-linking, custom animations, and an iOS Liquid Glass navigation bar.",
+      "Resolved 15+ production bugs (RenderFlex overflows, state persistence, iOS keyboard conflicts) across CEFR and IELTS modules.",
+    ],
+    stats: [
+      { value: 20000, suffix: "+", label: "Users reached" },
+      { value: 15, suffix: "+", label: "Bugs resolved" },
+      { value: 3, suffix: "", label: "Study tools shipped" },
+    ],
+  },
+];
 
 export const skillGroups = [
   { label: "Mobile", items: ["Flutter", "Dart", "Cross-Platform Development"] },

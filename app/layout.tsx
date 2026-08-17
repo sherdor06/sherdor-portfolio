@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { site } from "@/lib/content";
+import { site, experiences, education } from "@/lib/content";
 import ThemeProvider from "@/components/ThemeProvider";
 import LiquidBg from "@/components/LiquidBg";
 import MusicPlayer from "@/components/MusicPlayer";
@@ -27,6 +27,32 @@ export const metadata: Metadata = {
   },
 };
 
+// Structured data so search engines link the profile to its LinkedIn/GitHub
+// accounts and current employer.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  jobTitle: experiences[0].role,
+  email: `mailto:${site.email}`,
+  telephone: site.phone,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Tashkent",
+    addressCountry: "UZ",
+  },
+  worksFor: {
+    "@type": "Organization",
+    name: experiences[0].company,
+    url: experiences[0].companyUrl,
+  },
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: education.school,
+  },
+  sameAs: [site.linkedin, site.github],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,6 +61,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full`}>
       <body className="min-h-full bg-surface text-primary antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
         <LiquidBg />
         <ThemeProvider>
           <div className="relative">{children}</div>

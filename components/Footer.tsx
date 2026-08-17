@@ -1,4 +1,6 @@
 import { Mail, Phone } from "lucide-react";
+import GithubIcon from "./GithubIcon";
+import LinkedinIcon from "./LinkedinIcon";
 import { site } from "@/lib/content";
 
 export default function Footer() {
@@ -15,7 +17,7 @@ export default function Footer() {
           Feel free to reach out — I&apos;m open to new opportunities.
         </p>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-8">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
           <a
             href={`mailto:${site.email}`}
             className="inline-flex items-center gap-2 text-base font-medium text-secondary transition-colors hover:text-accent"
@@ -29,6 +31,24 @@ export default function Footer() {
           >
             <Phone className="h-5 w-5 text-accent" aria-hidden="true" />
             {site.phone}
+          </a>
+          <a
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-base font-medium text-secondary transition-colors hover:text-accent"
+          >
+            <LinkedinIcon className="h-5 w-5 text-accent" />
+            LinkedIn
+          </a>
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-base font-medium text-secondary transition-colors hover:text-accent"
+          >
+            <GithubIcon className="h-5 w-5 text-accent" />
+            GitHub
           </a>
         </div>
 
