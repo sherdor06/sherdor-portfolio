@@ -4,6 +4,7 @@ import { site, experiences, education } from "@/lib/content";
 import ThemeProvider from "@/components/ThemeProvider";
 import LiquidBg from "@/components/LiquidBg";
 import MusicPlayer from "@/components/MusicPlayer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -70,6 +71,7 @@ export default function RootLayout({
           <div className="relative">{children}</div>
           <MusicPlayer />
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
