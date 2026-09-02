@@ -13,9 +13,11 @@ export default function Languages() {
             <span className="text-base font-semibold text-primary">
               {language.name}
             </span>
-            <span className="ml-2 text-sm text-secondary">
-              {language.level}
-            </span>
+            {language.level && (
+              <span className="ml-2 text-sm text-secondary">
+                {language.level}
+              </span>
+            )}
           </li>
         ))}
       </ul>

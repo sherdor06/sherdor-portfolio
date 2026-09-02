@@ -54,12 +54,12 @@ export const experiences: Job[] = [
     companyUrl: "https://scoreup.uz/",
     period: "03/2026 – Present",
     bullets: [
-      "Built 3 study tools (Writing Samples, Typing, Podcasts) shipped to 20,000+ users; upgraded existing CEFR and IELTS test modules.",
+      "Built 3 study tools (Writing Samples, Typing, Podcasts) shipped to 50,000+ users; upgraded existing CEFR and IELTS test modules.",
       "Developed a Live Chat feature, platform-specific deep-linking, custom animations, and an iOS Liquid Glass navigation bar.",
       "Resolved 15+ production bugs (RenderFlex overflows, state persistence, iOS keyboard conflicts) across CEFR and IELTS modules.",
     ],
     stats: [
-      { value: 20000, suffix: "+", label: "Users reached" },
+      { value: 50000, suffix: "+", label: "Users reached" },
       { value: 15, suffix: "+", label: "Bugs resolved" },
       { value: 3, suffix: "", label: "Study tools shipped" },
     ],
@@ -80,9 +80,15 @@ export const education = {
   period: "2023 – 2028 (expected)",
 } as const;
 
-export const languages = [
+export type Language = {
+  name: string;
+  /** Omitted when the language should show no level badge. */
+  level?: string;
+};
+
+export const languages: Language[] = [
   { name: "Uzbek", level: "Native" },
-  { name: "English", level: "B2" },
-] as const;
+  { name: "English" },
+];
 
 export const interests = ["Mobile development", "Table tennis", "Football"] as const;
