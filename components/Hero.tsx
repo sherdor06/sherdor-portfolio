@@ -2,8 +2,7 @@ import { Mail, MapPin } from "lucide-react";
 import GithubIcon from "./GithubIcon";
 import LinkedinIcon from "./LinkedinIcon";
 import PhoneMockup from "./PhoneMockup";
-import HeroBg from "./HeroBg";
-import LiquidMetaballs from "./LiquidMetaballs";
+import TornPaperBg from "./TornPaperBg";
 import Spotlight from "./Spotlight";
 import { site } from "@/lib/content";
 
@@ -11,14 +10,17 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative scroll-mt-20 overflow-hidden bg-surface py-20 sm:py-28"
+      className="hero-paper relative scroll-mt-20 overflow-hidden py-20 sm:py-28"
     >
-      <HeroBg />
-      <LiquidMetaballs />
+      <TornPaperBg />
+      <div
+        aria-hidden="true"
+        className="hero-paper-fade pointer-events-none absolute inset-x-0 bottom-0 h-24 sm:h-32"
+      />
       <Spotlight />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
         <div className="flex flex-col items-center gap-12 sm:flex-row">
-          <div className="flex-1">
+          <div className="hero-copy flex-1">
             <p
               className="hero-rise text-sm font-semibold uppercase tracking-wide text-accent"
               style={{ animationDelay: "0.05s" }}
