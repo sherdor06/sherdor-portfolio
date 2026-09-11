@@ -321,6 +321,9 @@ export default function TornPaperBg() {
       antialias: false,
       depth: false,
       stencil: false,
+      // Keeps the last frame readable so the glass chain can refract the
+      // live sheet from its own WebGL context.
+      preserveDrawingBuffer: true,
     });
     if (!context) {
       canvas.style.display = "none";
@@ -496,6 +499,7 @@ export default function TornPaperBg() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
+      data-hero-backdrop
       className="pointer-events-none absolute inset-0 h-full w-full"
     />
   );

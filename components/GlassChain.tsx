@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 
 /** Glass torus knot adapted from NIDAL's Glass Hero:
  * https://codepen.io/Nidal95/pen/qERKExz
- * Keeps the reference geometry, optics, and rotation speeds.
+ * Keeps the reference geometry and rotation speeds; the optics are tuned so
+ * the knot reads as liquid glass refracting the live torn-paper sheet.
  */
 export default function GlassChain() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,10 +59,14 @@ export default function GlassChain() {
         metalness: 0,
         roughness: 0,
         transmission: 1,
-        thickness: 0.7,
-        ior: 1.45,
+        thickness: 1.4,
+        ior: 1.5,
         dispersion: 4,
-        envMapIntensity: 1,
+        // A faint warm body tint (close to the sheet, so it deepens rather than
+        // greys it) plus brighter rims keeps the glass visible over flat paper.
+        attenuationColor: new THREE.Color(0xefe4d4),
+        attenuationDistance: 0.35,
+        envMapIntensity: 1.4,
         toneMapped: false,
       });
       cleanups.push(() => material.dispose());
@@ -69,9 +74,19 @@ export default function GlassChain() {
       chain.position.z = 2.2;
       scene.add(chain);
 
-      // Supply the real hero typography to the glass refraction pass. The
-      // backdrop writes no color in the final pass, leaving the accessible
-      // HTML, links, and phone visible through the transparent canvas.
+      // The glass refracts what sits behind it: the live torn-paper sheet,
+      // uploaded from its canvas, with the hero typography drawn over it. Both
+      // backdrop planes write color only in the transmission pass, leaving the
+      // accessible HTML, links, and phone visible through the transparent canvas.
+      const paper = hero.querySelector<HTMLCanvasElement>("canvas[data-hero-backdrop]");
+      const paperReady = () => !!paper && paper.style.display !== "none";
+      const paperTexture = paper ? new THREE.CanvasTexture(paper) : null;
+      if (paperTexture) {
+        paperTexture.colorSpace = THREE.SRGBColorSpace;
+        paperTexture.minFilter = THREE.LinearFilter;
+        paperTexture.generateMipmaps = false;
+        cleanups.push(() => paperTexture.dispose());
+      }
       const textCanvas = document.createElement("canvas");
       const context2d = textCanvas.getContext("2d");
       if (!context2d) throw new Error("Canvas text rendering is unavailable");
@@ -83,6 +98,9 @@ export default function GlassChain() {
       cleanups.push(() => backdropGeometry.dispose());
       const backdropMaterial = new THREE.MeshBasicMaterial({
         map: texture,
+        // Over the sheet only the glyphs are opaque. The transmission pass skips
+        // transparent objects, so the empty areas are cut out instead.
+        alphaTest: 0.5,
         toneMapped: false,
         depthWrite: false,
       });
@@ -91,7 +109,22 @@ export default function GlassChain() {
       backdrop.onBeforeRender = (activeRenderer) => {
         backdropMaterial.colorWrite = activeRenderer.getRenderTarget() !== null;
       };
+      backdrop.renderOrder = -1;
       scene.add(backdrop);
+
+      const paperMaterial = new THREE.MeshBasicMaterial({
+        map: paperTexture,
+        toneMapped: false,
+        depthWrite: false,
+      });
+      cleanups.push(() => paperMaterial.dispose());
+      const paperPlane = new THREE.Mesh(backdropGeometry, paperMaterial);
+      paperPlane.onBeforeRender = (activeRenderer) => {
+        paperMaterial.colorWrite = activeRenderer.getRenderTarget() !== null;
+      };
+      paperPlane.renderOrder = -2;
+      paperPlane.visible = false;
+      scene.add(paperPlane);
 
       const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
       const pointer = new THREE.Vector2();
@@ -103,16 +136,35 @@ export default function GlassChain() {
       let elapsed = 1.6;
       let width = 1;
       let height = 1;
+      let backdropLive = false;
+      let paperFrame = 0;
+      let paperWidth = 0;
+      let paperHeight = 0;
 
       function drawBackdrop() {
         if (cancelled || !hero) return;
         const rect = hero.getBoundingClientRect();
         const dpr = Math.min(window.devicePixelRatio, 1.5);
-        textCanvas.width = Math.round(width * dpr);
-        textCanvas.height = Math.round(height * dpr);
+        const textWidth = Math.round(width * dpr);
+        const textHeight = Math.round(height * dpr);
+        // three.js allocates immutable texture storage, so a resized source
+        // needs a fresh GPU texture rather than an in-place update.
+        if (textCanvas.width !== textWidth || textCanvas.height !== textHeight) texture.dispose();
+        textCanvas.width = textWidth;
+        textCanvas.height = textHeight;
         textContext.setTransform(dpr, 0, 0, dpr, 0, 0);
-        // A bright studio with narrow contrast bands preserves the reference's
-        // clear-glass reflections even below the text and in a dark theme.
+        backdropLive = paperReady();
+        paperPlane.visible = backdropLive;
+        if (!backdropLive) drawStudio(rect);
+        textContext.textBaseline = "alphabetic";
+        drawGlyphs(rect);
+        texture.needsUpdate = true;
+      }
+
+      // Without the live sheet, a bright studio with narrow contrast bands keeps
+      // the reference's clear-glass reflections, even in a dark theme.
+      function drawStudio(rect: DOMRect) {
+        if (!hero) return;
         const anchor = hero.querySelector("[data-chain-anchor]")!.getBoundingClientRect();
         const studio = textContext.createLinearGradient(
           anchor.left - rect.left, anchor.top - rect.top,
@@ -129,8 +181,10 @@ export default function GlassChain() {
         studio.addColorStop(1, "#e9e9e7");
         textContext.fillStyle = studio;
         textContext.fillRect(0, 0, width, height);
-        textContext.textBaseline = "alphabetic";
+      }
 
+      function drawGlyphs(rect: DOMRect) {
+        if (!hero) return;
         hero.querySelectorAll<HTMLElement>("[data-chain-refract]").forEach((element) => {
           const typography = getComputedStyle(element);
           textContext.font = `${typography.fontWeight} ${typography.fontSize} ${typography.fontFamily}`;
@@ -157,11 +211,26 @@ export default function GlassChain() {
             }
           }
         });
-        texture.needsUpdate = true;
+      }
+
+      function refreshPaper() {
+        if (!paper || !paperTexture) return;
+        if (paper.width !== paperWidth || paper.height !== paperHeight) {
+          paperWidth = paper.width;
+          paperHeight = paper.height;
+          paperTexture.dispose();
+          paperTexture.needsUpdate = true;
+          return;
+        }
+        // The sheet moves slowly; re-uploading it every other frame halves the
+        // cross-canvas copy without visible lag.
+        if (motion.matches || paperFrame++ % 2 === 0) paperTexture.needsUpdate = true;
       }
 
       function paint() {
         if (cancelled || contextLost) return;
+        if (paperReady() !== backdropLive) drawBackdrop();
+        if (backdropLive) refreshPaper();
         chain.rotation.set(
           motion.matches ? 0.6 : elapsed * 0.35 + easedPointer.y * 0.15,
           motion.matches ? 0.4 : elapsed * 0.5 + easedPointer.x * 0.2,
@@ -201,6 +270,7 @@ export default function GlassChain() {
         camera.updateProjectionMatrix();
         const visibleHeight = 2 * 5 * Math.tan(THREE.MathUtils.degToRad(22.5));
         backdrop.scale.set(visibleHeight * camera.aspect, visibleHeight, 1);
+        paperPlane.scale.copy(backdrop.scale);
 
         const heroRect = hero.getBoundingClientRect();
         const anchor = hero.querySelector("[data-chain-anchor]")!.getBoundingClientRect();
