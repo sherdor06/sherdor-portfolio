@@ -1,50 +1,34 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Music, Volume2 } from "lucide-react";
+import { Music, Pause } from "lucide-react";
 
 const MUSIC_URL = "/winter777.mp3";
 
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
-  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    let started = false;
-
-    const startPlayback = () => {
-      if (started) return;
-      audio.play().then(() => {
-        started = true;
-        setPlaying(true);
-        setAutoplayBlocked(false);
-      }).catch(() => {
-        setAutoplayBlocked(true);
-      });
+    const handleEnded = () => {
+      setPlaying(false);
+      audio.currentTime = 0;
     };
 
-    const handleInteraction = () => {
-      if (!started) startPlayback();
-    };
+    const handleCanPlay = () => setLoaded(true);
 
-    audio.addEventListener("canplaythrough", startPlayback, { once: true });
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("canplaythrough", handleCanPlay);
 
-    if (audio.readyState >= 3) {
-      audio.removeEventListener("canplaythrough", startPlayback);
-      startPlayback();
-    }
-
-    document.addEventListener("pointerdown", handleInteraction, { once: true });
-    document.addEventListener("keydown", handleInteraction, { once: true });
+    if (audio.readyState >= 3) setLoaded(true);
 
     return () => {
-      audio.removeEventListener("canplaythrough", startPlayback);
-      document.removeEventListener("pointerdown", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("canplaythrough", handleCanPlay);
     };
   }, []);
 
@@ -62,7 +46,7 @@ export default function MusicPlayer() {
 
   return (
     <>
-      <audio ref={audioRef} src={MUSIC_URL} preload="auto" loop />
+      <audio ref={audioRef} src={MUSIC_URL} preload="auto" loop={false} />
 
       <button
         type="button"
@@ -86,12 +70,11 @@ export default function MusicPlayer() {
         )}
       </button>
 
-      {autoplayBlocked && !playing && (
-        <div className="fixed bottom-24 right-6 z-50">
-          <div className="flex items-center gap-2 rounded-full bg-slate-800/90 px-4 py-2 text-xs text-slate-300 shadow-lg backdrop-blur-md">
-            <Volume2 className="h-3 w-3 text-blue-400" />
-            Sahifani bossangiz musiqa ijro etiladi
-          </div>
+      {/* Lets taps reach the button: iOS Safari won't buffer the track (so
+          never fires canplaythrough) until the user presses play. */}
+      {!loaded && (
+        <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-600 border-t-blue-500" />
         </div>
       )}
     </>
