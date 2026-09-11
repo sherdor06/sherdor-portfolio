@@ -3,6 +3,7 @@ import GithubIcon from "./GithubIcon";
 import LinkedinIcon from "./LinkedinIcon";
 import PhoneMockup from "./PhoneMockup";
 import TornPaperBg from "./TornPaperBg";
+import GlassChain from "./GlassChain";
 import Spotlight from "./Spotlight";
 import { site } from "@/lib/content";
 
@@ -18,22 +19,26 @@ export default function Hero() {
         className="hero-paper-fade pointer-events-none absolute inset-x-0 bottom-0 h-24 sm:h-32"
       />
       <Spotlight />
+      <GlassChain />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6">
         <div className="flex flex-col items-center gap-12 sm:flex-row">
-          <div className="hero-copy flex-1">
+          <div className="hero-copy flex-1" data-hero-copy>
             <p
+              data-chain-refract
               className="hero-rise text-sm font-semibold uppercase tracking-wide text-accent"
               style={{ animationDelay: "0.05s" }}
             >
               {site.title}
             </p>
             <h1
+              data-chain-refract
               className="hero-rise mt-3 text-4xl font-bold tracking-tight sm:text-5xl"
               style={{ animationDelay: "0.15s" }}
             >
               <span className="text-gradient">{site.name}</span>
             </h1>
             <p
+              data-chain-refract
               className="hero-rise mt-4 max-w-2xl text-lg text-secondary"
               style={{ animationDelay: "0.25s" }}
             >
@@ -78,6 +83,11 @@ export default function Hero() {
                 LinkedIn
               </a>
             </div>
+            <div
+              data-chain-anchor
+              aria-hidden="true"
+              className="mt-4 h-44 max-w-[420px] sm:h-52"
+            />
           </div>
 
           <div
